@@ -25,7 +25,7 @@ public class SPCarController : MonoBehaviour
 
     private void Awake()
     {
-        carScript = carScripts[0];
+        carScript = carScripts[1];
 
         mainCam = Camera.main;
         if (mainCam == null)
