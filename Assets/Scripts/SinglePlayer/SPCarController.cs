@@ -8,7 +8,7 @@ public class SPCarController : MonoBehaviour
     public CarScriptableObject[] carScripts;
     private CarScriptableObject carScript;
 
-    [SerializeField] private float backAcceleration = 30f;
+    [SerializeField] private float backAcceleration = 3f;
 
     private float currentSpeed = 0f; // Текущая скорость
 
@@ -66,32 +66,57 @@ public class SPCarController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Ускорение и торможение
         if (moveInput > 0)
         {
-            currentSpeed += carScript.accelerationRate * Time.fixedDeltaTime;
-            currentSpeed = Mathf.Clamp(currentSpeed, 0, carScript.maxSpeed);
+            // Ускорение вперёд
+            if (currentSpeed >= 0)
+            {
+                currentSpeed += carScript.accelerationRate * Time.fixedDeltaTime;
+            }
+            else
+            {
+                // Замедление перед сменой направления
+                currentSpeed = Mathf.Lerp(currentSpeed, 0, carScript.brakeDeceleration * Time.fixedDeltaTime);
+                if (Mathf.Abs(currentSpeed) < 0.1f)
+                {
+                    currentSpeed = 0; // Обнуляем скорость для точности
+                }
+            }
+            currentSpeed = Mathf.Clamp(currentSpeed, -carScript.maxSpeed / 2, carScript.maxSpeed);
         }
         else if (moveInput < 0)
         {
-            currentSpeed -= carScript.decelerationRate * Time.fixedDeltaTime;
-            currentSpeed = Mathf.Clamp(currentSpeed, -carScript.maxSpeed / 2, 0);
+            // Ускорение назад
+            if (currentSpeed <= 0)
+            {
+                currentSpeed -= backAcceleration * Time.fixedDeltaTime;
+            }
+            else
+            {
+                // Замедление перед сменой направления
+                currentSpeed = Mathf.Lerp(currentSpeed, 0, carScript.brakeDeceleration * Time.fixedDeltaTime);
+                if (Mathf.Abs(currentSpeed) < 0.1f)
+                {
+                    currentSpeed = 0; // Обнуляем скорость для точности
+                }
+            }
+            currentSpeed = Mathf.Clamp(currentSpeed, -carScript.maxSpeed / 5, carScript.maxSpeed);
         }
         else
         {
-            // Плавное замедление, когда газ отпущен
+            // Плавное замедление при отсутствии ввода
             currentSpeed = Mathf.Lerp(currentSpeed, 0, carScript.drag);
         }
 
-        // При торможении (пробел) уменьшаем скорость быстрее
+        // Применение торможения (пробел)
         if (isBraking)
         {
             currentSpeed = Mathf.Lerp(currentSpeed, 0, carScript.brakeDeceleration * Time.fixedDeltaTime);
         }
 
-        // Применение движения вперед/назад
+        // Применение движения
         Vector3 forwardForce = transform.forward * currentSpeed;
-        rb.velocity = new Vector3(forwardForce.x, rb.velocity.y, forwardForce.z); // Сохраняем вертикальную скорость
+        rb.velocity = new Vector3(forwardForce.x, rb.velocity.y, forwardForce.z);
 
         // Управление поворотом
         if (currentSpeed > 0.1f)
@@ -110,6 +135,7 @@ public class SPCarController : MonoBehaviour
         // Камера движения
         CameraMovement();
     }
+
 
     private void CameraMovement()
     {
@@ -137,7 +163,7 @@ public class SPCarController : MonoBehaviour
             float speedInMetersPerSecond = rb.velocity.magnitude;
 
             // Переводим в километры в час
-            float speedInKilometersPerHour = speedInMetersPerSecond * 3.6f;
+            float speedInKilometersPerHour = (speedInMetersPerSecond * 3.6f) / 1;
 
             // Отображаем скорость на UI (с округлением до 2 знаков после запятой)
             textMeshPro.text = "Speed: " + speedInKilometersPerHour.ToString("F2") + " km/h";

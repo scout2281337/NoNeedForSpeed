@@ -14,6 +14,10 @@ public class CarScriptableObject : ScriptableObject
     [Header("For BoxCollider")]
     public float SizeX = 2.7f;
     public float SizeY = 1.669491f;
-    public double SizeZ = 6.609232;
+    public float SizeZ = 6.609232f;
+
+    public float CenterX;
+    public float CenterY;
+    public float CenterZ;
 
 }

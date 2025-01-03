@@ -19,5 +19,8 @@ MonoBehaviour:
   drag: 0.005
   brakeDeceleration: 5
   SizeX: 2.7
-  SizeY: 1.669491
-  SizeZ: 6.609232
+  SizeY: 1.67
+  SizeZ: 6.61
+  CenterX: 0
+  CenterY: 1.22
+  CenterZ: -0.45

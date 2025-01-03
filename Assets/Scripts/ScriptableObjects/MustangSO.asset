@@ -18,3 +18,9 @@ MonoBehaviour:
   decelerationRate: 1
   drag: 0.005
   brakeDeceleration: 3
+  SizeX: 2.6
+  SizeY: 1.5
+  SizeZ: 6
+  CenterX: 0
+  CenterY: 1.19316
+  CenterZ: -0.2747511
