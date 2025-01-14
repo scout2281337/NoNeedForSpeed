@@ -164,9 +164,9 @@ public class SPCarController : MonoBehaviour
 
             // Переводим в километры в час
             float speedInKilometersPerHour = (speedInMetersPerSecond * 3.6f) / 1;
-
+            int SpeedForUI = (int)speedInKilometersPerHour;
             // Отображаем скорость на UI (с округлением до 2 знаков после запятой)
-            textMeshPro.text = "Speed: " + speedInKilometersPerHour.ToString("F2") + " km/h";
+            textMeshPro.text =  SpeedForUI.ToString();
         }
         else
         {
